@@ -4,7 +4,7 @@
 Plugin Name: Aparat for WordPress
 Plugin URI: https://alirezasedghi.com/plugins/aparat-for-wordPress/
 Description: Displaying Aparat videos on website content, along with a widget for showing a list of channel videos.
-Version: 2.2.2
+Version: 2.2.3
 Author: Alireza Sedghi
 Author URI: https://alirezasedghi.com
 Text Domain: wp-aparat
@@ -17,7 +17,7 @@ if ( !defined( 'ABSPATH' ) ) {
     die('Forbidden');
 }
 
-$wp_aparat_plugin_version = '2.2.2';
+$wp_aparat_plugin_version = '2.2.3';
 
 // Translation of plugin description
 $dummy_name = __( "Aparat for WordPress", "wp-aparat" );
@@ -36,7 +36,11 @@ $wp_aparat_plugin_languages_path = $wp_aparat_plugin_path . '/languages';
 $wp_aparat_plugin_url = plugin_dir_url( __FILE__ );
 
 // Load languages
-load_plugin_textdomain( 'wp-aparat', false, $wp_aparat_plugin_languages_path );
+function load_aparat_text_domain() {
+    global $wp_aparat_plugin_languages_path;
+    load_plugin_textdomain( 'wp-aparat', false, $wp_aparat_plugin_languages_path );
+}
+add_action('init', 'load_aparat_text_domain');
 
 // Load files
 require_once('functions.php');
@@ -124,12 +128,12 @@ add_filter( 'body_class', 'wp_aparat_body_class' );
  * @return string
  */
 function wp_aparat_shortcode($atts) {
-	extract(
-		shortcode_atts( array(
-			'id'		=> '',
-			'width'		=> 'full',
-		), $atts )
-	);
+    extract(
+        shortcode_atts( array(
+            'id'		=> '',
+            'width'		=> 'full',
+        ), $atts )
+    );
 
     $id = !empty($id) ? preg_replace('/[^0-9a-zA-Z]/i', '', $id) : '';
     $width = $width ?? "full";
@@ -160,8 +164,8 @@ add_shortcode( 'aparat', 'wp_aparat_shortcode' );
  * @return mixed
  */
 function wp_aparat_editor_button($buttons) {
-	array_push($buttons, "separator", "aparat_shortcode");
-	return $buttons;
+    array_push($buttons, "separator", "aparat_shortcode");
+    return $buttons;
 }
 add_filter('mce_buttons', 'wp_aparat_editor_button', 0);
 
